@@ -52,6 +52,14 @@ app.put('/api/links/:id', (req, res) => {
   res.json(link);
 });
 
+app.delete('/api/links/:id', (req, res) => {
+  let link = links.find((link) => link.id == req.params.id);
+  if (!link) return res.send("Resource not found");
+  const index = links.indexOf(link);
+  links.splice(index, 1);
+  res.json(link);
+})
+
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 function validate(link) {
