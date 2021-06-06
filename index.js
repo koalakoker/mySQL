@@ -1,8 +1,11 @@
+const cors = require('cors');
 const Joi = require('joi');
 const express = require('express');
 const PORT = process.env.PORT || 5000
 const app = express();
+
 app.use(express.json());
+app.use(cors());
 
 let links = [
   {
