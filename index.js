@@ -12,13 +12,21 @@ let links = [
     "url": "www.google.it"
   }]
 
+app.get('/', (req, res) => {
+  res.send("Hello, please use the API");
+});
+
 app.get('/api/links', (req, res) => {
   res.set('Content-Type', 'application/json');
   res.send(JSON.stringify(links));
 })
 
-app.put('/api/links/:id', (req, res) => {
-  res.send("Put");
+// Add new element
+app.use(express.json()) // for parsing application/json
+app.post('/api/links', function (req, res, next) {
+  // Validate
+  links.push(req.body);
+  res.json(req.body)
 })
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
