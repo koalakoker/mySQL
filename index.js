@@ -1,19 +1,7 @@
+const Joi = require('joi');
 const express = require('express');
 const PORT = process.env.PORT || 5000
 const app = express();
-
-const Joi = require('joi');
-const schema = Joi.object({
-  name: Joi.string()
-    .alphanum()
-    .min(3)
-    .max(30)
-    .required(),
-  url: Joi.string()
-    .uri()
-    .max(300)
-    .required()
-})
 
 let links = [
   {
@@ -38,20 +26,40 @@ app.get('/api/links', (req, res) => {
 })
 
 // Add new element
-app.use(express.json()) // for parsing application/json
-app.post('/api/links', function (req, res) {
-  
-  let link = req.body;
-  const { error } = schema.validate(link);
-  if (error) {
-    res.send(error.details[0].message);
-    return;
-  }
-
+app.use(express.json())
+app.post('/api/links', (req, res) => {
+  if (validate(req.body)) return res.send(error.details[0].message);
   link = { 'id': newId, ...req.body };
   newId += 1;
   links.push(link);
   res.json(link);
 })
 
+app.put('/api/links/:id', (req, res) => {
+  const error = validate(req.body);
+  if (error) return res.send(error.details[0].message);
+  let link = links.find((link) => link.id == req.params.id);
+  if (!link) return res.send("Resource not found");
+  const index = links.indexOf(link);
+  links[index].name = req.body.name;
+  links[index].url  = req.body.url;
+  res.json(link);
+})
+
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+
+function validate(link) {
+  const schema = Joi.object({
+    name: Joi.string()
+      .min(3)
+      .max(30)
+      .required(),
+    url: Joi.string()
+      .uri()
+      .max(300)
+      .required()
+  })
+
+  const { error } = schema.validate(link);
+  return error;
+}
