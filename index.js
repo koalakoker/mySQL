@@ -21,9 +21,14 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/links', (req, res) => {
-  res.set('Content-Type', 'application/json');
-  res.send(JSON.stringify(links));
-})
+  res.json(links);
+});
+
+app.get('/api/links/:id', (req, res) => {
+  let link = links.find((link) => link.id == req.params.id);
+  if (!link) return res.send("Resource not found");
+  res.json(link);
+});
 
 // Add new element
 app.use(express.json())
@@ -33,8 +38,9 @@ app.post('/api/links', (req, res) => {
   newId += 1;
   links.push(link);
   res.json(link);
-})
+});
 
+// Update element
 app.put('/api/links/:id', (req, res) => {
   const error = validate(req.body);
   if (error) return res.send(error.details[0].message);
@@ -44,7 +50,7 @@ app.put('/api/links/:id', (req, res) => {
   links[index].name = req.body.name;
   links[index].url  = req.body.url;
   res.json(link);
-})
+});
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
