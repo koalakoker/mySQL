@@ -2,6 +2,7 @@ const Joi = require('joi');
 const express = require('express');
 const PORT = process.env.PORT || 5000
 const app = express();
+app.use(express.json());
 
 let links = [
   {
@@ -31,7 +32,6 @@ app.get('/api/links/:id', (req, res) => {
 });
 
 // Add new element
-app.use(express.json())
 app.post('/api/links', (req, res) => {
   if (validate(req.body)) return res.send(error.details[0].message);
   link = { 'id': newId, ...req.body };
