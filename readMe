@@ -1,0 +1,8 @@
+Open two terminal
+
+terminal 1
+cd src
+nodemon
+
+termina 2
+nodemon

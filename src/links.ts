@@ -1,174 +1,101 @@
-export let links = [
-  {
-    "id": 1,
-    "href": "http://best.st.com/OurBusiness/MarketSales/SRA/Pages/Home.aspx",
-    "name": "SRA",
-    "level": 1
-  },
-  {
-    "id": 2,
-    "href": "http://pow.ctn.st.com/CLAB/pow_entry.asp",
-    "name": "POW",
-    "level": 2
-  },
-  {
-    "id": 3,
-    "href": "http://ctnapp.st.com/clab/package_upload/",
-    "name": "Industrialization package",
-    "level": 2
-  },
-  {
-    "id": 4,
-    "href": "http://syncdms.st.com/mydms_syslab/out/out.Login.php",
-    "name": "MyDMS",
-    "level": 2
-  },
-  {
-    "id": 5,
-    "href": "http://tlms.st.com/sites/tlms/SitePages/Home.aspx",
-    "name": "TLMS",
-    "level": 2
-  },
-  {
-    "id": 6,
-    "href": "https://peopleservices.st.com/ ",
-    "name": "Giustificativi",
-    "level": 1
-  },
-  {
-    "id": 7,
-    "href": "https://www.zxplink.it.adp.com",
-    "name": "Busta paga",
-    "level": 1
-  },
-  {
-    "id": 8,
-    "href": "http://best.st.com/",
-    "name": "BeST",
-    "level": 1
-  },
-  {
-    "id": 9,
-    "href": "https://webapp.st.com/JD/index.php",
-    "name": "JD",
-    "level": 1
-  },
-  {
-    "id": 10,
-    "href": "https://ehr.st.com/",
-    "name": "People First",
-    "level": 2
-  },
-  {
-    "id": 11,
-    "href": "https://edirectory.st.com/index.php",
-    "name": "E-Directory",
-    "level": 2
-  },
-  {
-    "id": 12,
-    "href": "https://medialib.st.com",
-    "name": "Digital Assets Library",
-    "level": 2
-  },
-  {
-    "id": 13,
-    "href": "",
-    "name": "Travel",
-    "level": 1
-  },
-  {
-    "id": 14,
-    "href": "http://te.st.com/",
-    "name": "Travel &amp; Expenses",
-    "level": 2
-  },
-  {
-    "id": 15,
-    "href": "LOP_Viaggi.pdf",
-    "name": "Lop",
-    "level": 2
-  },
-  {
-    "id": 16,
-    "href": "http://best.st.com/Locations/Italy/Catania/Pages/Home.aspx",
-    "name": "Catania Site",
-    "level": 1
-  },
-  {
-    "id": 17,
-    "href": "http://best.st.com/Locations/Italy/Catania/Pages/banca-e-assicurazione.aspx",
-    "name": "Assicurazione",
-    "level": 2
-  },
-  {
-    "id": 18,
-    "href": "https://mense.allfoodspa.com/webapp/login",
-    "name": "Launch box",
-    "level": 2
-  },
-  {
-    "id": 19,
-    "href": "https://codex.cro.st.com/account/login.php?return_to=%2Fmy%2F",
-    "name": "Codex",
-    "level": 1
-  },
-  {
-    "id": 20,
-    "href": "https://codex.cro.st.com/projects/Drives/",
-    "name": "Drives Development (ind. and auto.)",
-    "level": 2
-  },
-  {
-    "id": 21,
-    "href": "https://codex.cro.st.com/projects/stworkbench",
-    "name": "Workbench - Motor Profiler",
-    "level": 2
-  },
-  {
-    "id": 22,
-    "href": "https://codex.cro.st.com/plugins/tracker/?group_id=6449",
-    "name": "Tools Manufacturing Requests",
-    "level": 2
-  },
-  {
-    "id": 23,
-    "href": "",
-    "name": "Setup",
-    "level": 1
-  },
-  {
-    "id": 24,
-    "href": "https://codex.cro.st.com/file/showfiles.php?group_id=5289",
-    "name": "SDK setup Area",
-    "level": 2
-  },
-  {
-    "id": 25,
-    "href": "",
-    "name": "Share points",
-    "level": 1
-  },
-  {
-    "id": 26,
-    "href": "http://best-collab.st.com/ws/MCDMotorControl/SitePages/Home.aspx",
-    "name": "MCD Motor Control development",
-    "level": 2
-  },
-  {
-    "id": 27,
-    "href": "https://intbugzilla.st.com/",
-    "name": "Bugzilla",
-    "level": 1
-  }
-];
+import * as Joi from 'joi'
+import mongoose from 'mongoose';
 
-let _newId = 28;
+const linkSchema = new mongoose.Schema({
+  href: { type: String, required: true },
+  name: { type: String, required: true },
+  level: { type: Number, required: true }
+});
+const Link = mongoose.model('Links', linkSchema);
 
-export function newId(): number {
-  return _newId
+function sendNotFound(res) {
+  res.status(404).send("The request element can't be found")
 }
 
-export function setNewId(newId: number): void {
-  _newId = newId;
+function sendBadRequest(res) {
+  return res.status(400).send("The request is not correct");
+}
+
+export function init(app) {
+  app.get('/api/links', async (req, res) => {
+    res.json(await Link.find({}));
+  });
+
+  app.get('/api/links/:id', async (req, res) => {
+    try {
+      const link = await Link.find({ _id: req.params.id });
+      if (link.length == 0) return sendNotFound(res);
+      res.json(link);
+    } catch (error) {
+      console.log(error.message);
+      return sendBadRequest(res);
+    }
+  });
+
+  app.post('/api/links', async (req, res) => {
+    const error = validate(req.body);
+    if (validate(req.body)) {
+      console.log(error.details[0].message);
+      return sendBadRequest(res);
+    }
+    try {
+      let link = new Link(req.body);
+      link = await link.save();
+      res.json(link);
+    } catch (error) {
+      console.log(error.message);
+      return sendBadRequest(res);
+    }
+  });
+
+  app.put('/api/links/:id', async (req, res) => {
+    const error = validate(req.body);
+    if (error) {
+      console.log(error.details[0].message);
+      return sendBadRequest(res);
+    }
+    try {
+
+      const result = await Link.findByIdAndUpdate({ _id: req.params.id },
+        { $set: req.body },
+        { new: true ,
+         useFindAndModify: false});
+      if (!result) return sendNotFound(res);
+      res.json(result);
+    } catch (error) {
+      console.log(error.message);
+      return sendBadRequest(res);
+    }
+  });
+
+  app.delete('/api/links/:id', async (req, res) => {
+    try {
+      const link = await Link.findByIdAndRemove(req.params.id);
+      if (!link) return sendNotFound(res);
+      res.json(link);
+    } catch (error) {
+      console.log(error.message);
+      return sendBadRequest(res);
+    }
+  })
+}
+
+function validate(link) {
+  const schema = Joi.object({
+    name: Joi.string()
+      .min(3)
+      .max(30)
+      .required(),
+    href: Joi.string()
+      .uri()
+      .max(300)
+      .required(),
+    level: Joi.number()
+      .min(1)
+      .max(2)
+      .required()
+  })
+
+  const { error } = schema.validate(link);
+  return error;
 }
