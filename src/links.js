@@ -58,9 +58,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.init = void 0;
+exports.router = void 0;
 var Joi = __importStar(require("joi"));
 var mongoose_1 = __importDefault(require("mongoose"));
+var express_1 = __importDefault(require("express"));
+exports.router = express_1.default.Router();
 var linkSchema = new mongoose_1.default.Schema({
     href: { type: String, required: true },
     name: { type: String, required: true },
@@ -73,121 +75,117 @@ function sendNotFound(res) {
 function sendBadRequest(res) {
     return res.status(400).send("The request is not correct");
 }
-function init(app) {
-    var _this = this;
-    app.get('/api/links', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-        var _a, _b;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
-                case 0:
-                    _b = (_a = res).json;
-                    return [4 /*yield*/, Link.find({})];
-                case 1:
-                    _b.apply(_a, [_c.sent()]);
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    app.get('/api/links/:id', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-        var link, error_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, Link.find({ _id: req.params.id })];
-                case 1:
-                    link = _a.sent();
-                    if (link.length == 0)
-                        return [2 /*return*/, sendNotFound(res)];
-                    res.json(link);
-                    return [3 /*break*/, 3];
-                case 2:
-                    error_1 = _a.sent();
-                    console.log(error_1.message);
+exports.router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                _b = (_a = res).json;
+                return [4 /*yield*/, Link.find({})];
+            case 1:
+                _b.apply(_a, [_c.sent()]);
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.router.get('/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var link, error_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, Link.find({ _id: req.params.id })];
+            case 1:
+                link = _a.sent();
+                if (link.length == 0)
+                    return [2 /*return*/, sendNotFound(res)];
+                res.json(link);
+                return [3 /*break*/, 3];
+            case 2:
+                error_1 = _a.sent();
+                console.log(error_1.message);
+                return [2 /*return*/, sendBadRequest(res)];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
+exports.router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var error, link, error_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                error = validate(req.body);
+                if (validate(req.body)) {
+                    console.log(error.details[0].message);
                     return [2 /*return*/, sendBadRequest(res)];
-                case 3: return [2 /*return*/];
-            }
-        });
-    }); });
-    app.post('/api/links', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-        var error, link, error_2;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    error = validate(req.body);
-                    if (validate(req.body)) {
-                        console.log(error.details[0].message);
-                        return [2 /*return*/, sendBadRequest(res)];
-                    }
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    link = new Link(req.body);
-                    return [4 /*yield*/, link.save()];
-                case 2:
-                    link = _a.sent();
-                    res.json(link);
-                    return [3 /*break*/, 4];
-                case 3:
-                    error_2 = _a.sent();
-                    console.log(error_2.message);
+                }
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                link = new Link(req.body);
+                return [4 /*yield*/, link.save()];
+            case 2:
+                link = _a.sent();
+                res.json(link);
+                return [3 /*break*/, 4];
+            case 3:
+                error_2 = _a.sent();
+                console.log(error_2.message);
+                return [2 /*return*/, sendBadRequest(res)];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+exports.router.put('/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var error, result, error_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                error = validate(req.body);
+                if (error) {
+                    console.log(error.details[0].message);
                     return [2 /*return*/, sendBadRequest(res)];
-                case 4: return [2 /*return*/];
-            }
-        });
-    }); });
-    app.put('/api/links/:id', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-        var error, result, error_3;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    error = validate(req.body);
-                    if (error) {
-                        console.log(error.details[0].message);
-                        return [2 /*return*/, sendBadRequest(res)];
-                    }
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, Link.findByIdAndUpdate({ _id: req.params.id }, { $set: req.body }, { new: true,
-                            useFindAndModify: false })];
-                case 2:
-                    result = _a.sent();
-                    if (!result)
-                        return [2 /*return*/, sendNotFound(res)];
-                    res.json(result);
-                    return [3 /*break*/, 4];
-                case 3:
-                    error_3 = _a.sent();
-                    console.log(error_3.message);
-                    return [2 /*return*/, sendBadRequest(res)];
-                case 4: return [2 /*return*/];
-            }
-        });
-    }); });
-    app.delete('/api/links/:id', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-        var link, error_4;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, Link.findByIdAndRemove(req.params.id)];
-                case 1:
-                    link = _a.sent();
-                    if (!link)
-                        return [2 /*return*/, sendNotFound(res)];
-                    res.json(link);
-                    return [3 /*break*/, 3];
-                case 2:
-                    error_4 = _a.sent();
-                    console.log(error_4.message);
-                    return [2 /*return*/, sendBadRequest(res)];
-                case 3: return [2 /*return*/];
-            }
-        });
-    }); });
-}
-exports.init = init;
+                }
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, Link.findByIdAndUpdate({ _id: req.params.id }, { $set: req.body }, { new: true,
+                        useFindAndModify: false })];
+            case 2:
+                result = _a.sent();
+                if (!result)
+                    return [2 /*return*/, sendNotFound(res)];
+                res.json(result);
+                return [3 /*break*/, 4];
+            case 3:
+                error_3 = _a.sent();
+                console.log(error_3.message);
+                return [2 /*return*/, sendBadRequest(res)];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+exports.router.delete('/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var link, error_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, Link.findByIdAndRemove(req.params.id)];
+            case 1:
+                link = _a.sent();
+                if (!link)
+                    return [2 /*return*/, sendNotFound(res)];
+                res.json(link);
+                return [3 /*break*/, 3];
+            case 2:
+                error_4 = _a.sent();
+                console.log(error_4.message);
+                return [2 /*return*/, sendBadRequest(res)];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
 function validate(link) {
     var schema = Joi.object({
         name: Joi.string()

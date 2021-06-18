@@ -1,5 +1,8 @@
 import * as Joi from 'joi'
 import mongoose from 'mongoose';
+import express from 'express';
+
+export const router = express.Router();
 
 const linkSchema = new mongoose.Schema({
   href: { type: String, required: true },
@@ -16,69 +19,68 @@ function sendBadRequest(res) {
   return res.status(400).send("The request is not correct");
 }
 
-export function init(app) {
-  app.get('/api/links', async (req, res) => {
-    res.json(await Link.find({}));
-  });
 
-  app.get('/api/links/:id', async (req, res) => {
-    try {
-      const link = await Link.find({ _id: req.params.id });
-      if (link.length == 0) return sendNotFound(res);
-      res.json(link);
-    } catch (error) {
-      console.log(error.message);
-      return sendBadRequest(res);
-    }
-  });
+router.get('/', async (req, res) => {
+  res.json(await Link.find({}));
+});
 
-  app.post('/api/links', async (req, res) => {
-    const error = validate(req.body);
-    if (validate(req.body)) {
-      console.log(error.details[0].message);
-      return sendBadRequest(res);
-    }
-    try {
-      let link = new Link(req.body);
-      link = await link.save();
-      res.json(link);
-    } catch (error) {
-      console.log(error.message);
-      return sendBadRequest(res);
-    }
-  });
+router.get('/:id', async (req, res) => {
+  try {
+    const link = await Link.find({ _id: req.params.id });
+    if (link.length == 0) return sendNotFound(res);
+    res.json(link);
+  } catch (error) {
+    console.log(error.message);
+    return sendBadRequest(res);
+  }
+});
 
-  app.put('/api/links/:id', async (req, res) => {
-    const error = validate(req.body);
-    if (error) {
-      console.log(error.details[0].message);
-      return sendBadRequest(res);
-    }
-    try {
+router.post('/', async (req, res) => {
+  const error = validate(req.body);
+  if (validate(req.body)) {
+    console.log(error.details[0].message);
+    return sendBadRequest(res);
+  }
+  try {
+    let link = new Link(req.body);
+    link = await link.save();
+    res.json(link);
+  } catch (error) {
+    console.log(error.message);
+    return sendBadRequest(res);
+  }
+});
 
-      const result = await Link.findByIdAndUpdate({ _id: req.params.id },
-        { $set: req.body },
-        { new: true ,
-         useFindAndModify: false});
-      if (!result) return sendNotFound(res);
-      res.json(result);
-    } catch (error) {
-      console.log(error.message);
-      return sendBadRequest(res);
-    }
-  });
+router.put('/:id', async (req, res) => {
+  const error = validate(req.body);
+  if (error) {
+    console.log(error.details[0].message);
+    return sendBadRequest(res);
+  }
+  try {
 
-  app.delete('/api/links/:id', async (req, res) => {
-    try {
-      const link = await Link.findByIdAndRemove(req.params.id);
-      if (!link) return sendNotFound(res);
-      res.json(link);
-    } catch (error) {
-      console.log(error.message);
-      return sendBadRequest(res);
-    }
-  })
-}
+    const result = await Link.findByIdAndUpdate({ _id: req.params.id },
+      { $set: req.body },
+      { new: true ,
+        useFindAndModify: false});
+    if (!result) return sendNotFound(res);
+    res.json(result);
+  } catch (error) {
+    console.log(error.message);
+    return sendBadRequest(res);
+  }
+});
+
+router.delete('/:id', async (req, res) => {
+  try {
+    const link = await Link.findByIdAndRemove(req.params.id);
+    if (!link) return sendNotFound(res);
+    res.json(link);
+  } catch (error) {
+    console.log(error.message);
+    return sendBadRequest(res);
+  }
+})
 
 function validate(link) {
   const schema = Joi.object({

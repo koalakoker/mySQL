@@ -1,4 +1,4 @@
-import * as links from './links';
+import { router as links }  from './links';
 import cors from 'cors';
 import express from 'express';
 import Debug from "debug";
@@ -12,7 +12,7 @@ mongoose.connect('mongodb://localhost:27017/Links', { useNewUrlParser: true, use
   .then(() => {
     console.log("Connected with db...");
   })
-  mongoose.set('useFindAndModify', false);
+mongoose.set('useFindAndModify', false);
 
 app.use(express.json());
 app.use(cors());
@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
   res.send("Hello, please use the API");
 });
 
-links.init(app);
+app.use('/api/links', links);
 
 app.listen(PORT, () => {
   console.log("Starting glink server...");
