@@ -1,8 +1,10 @@
-import { router as links }  from './links';
 import cors from 'cors';
 import express from 'express';
 import Debug from "debug";
 import mongoose from 'mongoose';
+
+import { router as links  } from './links';
+import { router as config } from './config';
 
 const debug = Debug("MyApp");
 const PORT = process.env.PORT || 5000
@@ -22,6 +24,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/links', links);
+app.use('/api/config', config);
 
 app.listen(PORT, () => {
   console.log("Starting glink server...");

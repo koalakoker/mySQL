@@ -1,24 +1,17 @@
 import * as Joi from 'joi'
 import mongoose from 'mongoose';
 import express from 'express';
+import { sendNotFound, sendBadRequest } from './answers';
 
 export const router = express.Router();
 
 const linkSchema = new mongoose.Schema({
-  href: { type: String, required: true },
-  name: { type: String, required: true },
-  level: { type: Number, required: true }
+  href    : { type: String, required: true },
+  name    : { type: String, required: true },
+  level   : { type: Number, required: true },
+  position: { type: Number, required: true } 
 });
 const Link = mongoose.model('Links', linkSchema);
-
-function sendNotFound(res) {
-  res.status(404).send("The request element can't be found")
-}
-
-function sendBadRequest(res) {
-  return res.status(400).send("The request is not correct");
-}
-
 
 router.get('/', async (req, res) => {
   res.json(await Link.find({}));
@@ -42,7 +35,19 @@ router.post('/', async (req, res) => {
     return sendBadRequest(res);
   }
   try {
+    let nextPosition = 0;
+    // Query first to get the last position
+    const rows = await Link.find({});
+    rows.forEach(link => {
+      if (link['position'] !== undefined) {
+        if (link['position'] >= nextPosition) {
+          nextPosition = link['position'] + 1;
+        }
+      }
+    });
+
     let link = new Link(req.body);
+    link['position'] = nextPosition;
     link = await link.save();
     res.json(link);
   } catch (error) {

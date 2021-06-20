@@ -64,49 +64,25 @@ var mongoose_1 = __importDefault(require("mongoose"));
 var express_1 = __importDefault(require("express"));
 var answers_1 = require("./answers");
 exports.router = express_1.default.Router();
-var linkSchema = new mongoose_1.default.Schema({
-    href: { type: String, required: true },
-    name: { type: String, required: true },
-    level: { type: Number, required: true },
-    position: { type: Number, required: true }
+var configSchema = new mongoose_1.default.Schema({
+    nextPosition: { type: Number, required: true }
 });
-var Link = mongoose_1.default.model('Links', linkSchema);
+var Config = mongoose_1.default.model('Config', configSchema);
 exports.router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, _b;
     return __generator(this, function (_c) {
         switch (_c.label) {
             case 0:
                 _b = (_a = res).json;
-                return [4 /*yield*/, Link.find({})];
+                return [4 /*yield*/, Config.find({})];
             case 1:
                 _b.apply(_a, [_c.sent()]);
                 return [2 /*return*/];
         }
     });
 }); });
-exports.router.get('/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var link, error_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, Link.find({ _id: req.params.id })];
-            case 1:
-                link = _a.sent();
-                if (link.length == 0)
-                    return [2 /*return*/, answers_1.sendNotFound(res)];
-                res.json(link);
-                return [3 /*break*/, 3];
-            case 2:
-                error_1 = _a.sent();
-                console.log(error_1.message);
-                return [2 /*return*/, answers_1.sendBadRequest(res)];
-            case 3: return [2 /*return*/];
-        }
-    });
-}); });
 exports.router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var error, nextPosition_1, rows, link, error_2;
+    var error, config, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -117,35 +93,23 @@ exports.router.post('/', function (req, res) { return __awaiter(void 0, void 0, 
                 }
                 _a.label = 1;
             case 1:
-                _a.trys.push([1, 4, , 5]);
-                nextPosition_1 = 0;
-                return [4 /*yield*/, Link.find({})];
+                _a.trys.push([1, 3, , 4]);
+                config = new Config(req.body);
+                return [4 /*yield*/, config.save()];
             case 2:
-                rows = _a.sent();
-                rows.forEach(function (link) {
-                    if (link['position'] !== undefined) {
-                        if (link['position'] >= nextPosition_1) {
-                            nextPosition_1 = link['position'] + 1;
-                        }
-                    }
-                });
-                link = new Link(req.body);
-                link['position'] = nextPosition_1;
-                return [4 /*yield*/, link.save()];
+                config = _a.sent();
+                res.json(config);
+                return [3 /*break*/, 4];
             case 3:
-                link = _a.sent();
-                res.json(link);
-                return [3 /*break*/, 5];
-            case 4:
-                error_2 = _a.sent();
-                console.log(error_2.message);
+                error_1 = _a.sent();
+                console.log(error_1.message);
                 return [2 /*return*/, answers_1.sendBadRequest(res)];
-            case 5: return [2 /*return*/];
+            case 4: return [2 /*return*/];
         }
     });
 }); });
-exports.router.put('/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var error, result, error_3;
+exports.router.put('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var error, rows, config, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -156,59 +120,47 @@ exports.router.put('/:id', function (req, res) { return __awaiter(void 0, void 0
                 }
                 _a.label = 1;
             case 1:
-                _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, Link.findByIdAndUpdate({ _id: req.params.id }, { $set: req.body }, { new: true,
-                        useFindAndModify: false })];
+                _a.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, Config.find({})];
             case 2:
-                result = _a.sent();
-                if (!result)
-                    return [2 /*return*/, answers_1.sendNotFound(res)];
-                res.json(result);
-                return [3 /*break*/, 4];
+                rows = _a.sent();
+                // Check
+                if (rows.length != 1) {
+                    console.log("Inconsitent DB: config entry must be one");
+                    res.send("Inconsitent DB: config entry must be one");
+                    return [2 /*return*/];
+                }
+                config = rows[0];
+                return [4 /*yield*/, config.save()];
             case 3:
-                error_3 = _a.sent();
-                console.log(error_3.message);
+                //config.nextPosition = req.body.nextPosition;
+                config = _a.sent();
+                console.log(config);
+                res.json(config);
+                return [3 /*break*/, 5];
+            case 4:
+                error_2 = _a.sent();
+                console.log(error_2.message);
                 return [2 /*return*/, answers_1.sendBadRequest(res)];
-            case 4: return [2 /*return*/];
+            case 5: return [2 /*return*/];
         }
     });
 }); });
-exports.router.delete('/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var link, error_4;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, Link.findByIdAndRemove(req.params.id)];
-            case 1:
-                link = _a.sent();
-                if (!link)
-                    return [2 /*return*/, answers_1.sendNotFound(res)];
-                res.json(link);
-                return [3 /*break*/, 3];
-            case 2:
-                error_4 = _a.sent();
-                console.log(error_4.message);
-                return [2 /*return*/, answers_1.sendBadRequest(res)];
-            case 3: return [2 /*return*/];
-        }
-    });
-}); });
-function validate(link) {
+// router.delete('/:id', async (req, res) => {
+//   try {
+//     const link = await Link.findByIdAndRemove(req.params.id);
+//     if (!link) return sendNotFound(res);
+//     res.json(link);
+//   } catch (error) {
+//     console.log(error.message);
+//     return sendBadRequest(res);
+//   }
+// });
+function validate(config) {
     var schema = Joi.object({
-        name: Joi.string()
-            .min(3)
-            .max(30)
-            .required(),
-        href: Joi.string()
-            .uri()
-            .max(300)
-            .required(),
-        level: Joi.number()
-            .min(1)
-            .max(2)
+        nextPosition: Joi.number()
             .required()
     });
-    var error = schema.validate(link).error;
+    var error = schema.validate(config).error;
     return error;
 }
