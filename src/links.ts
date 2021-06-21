@@ -24,7 +24,7 @@ router.get('/:id', async (req, res) => {
     res.json(link);
   } catch (error) {
     console.log(error.message);
-    return sendBadRequest(res);
+    return sendBadRequest(res, error.message);
   }
 });
 
@@ -32,7 +32,7 @@ router.post('/', async (req, res) => {
   const error = validate(req.body);
   if (validate(req.body)) {
     console.log(error.details[0].message);
-    return sendBadRequest(res);
+    return sendBadRequest(res, error.details[0].message);
   }
   try {
     let nextPosition = 0;
@@ -52,7 +52,7 @@ router.post('/', async (req, res) => {
     res.json(link);
   } catch (error) {
     console.log(error.message);
-    return sendBadRequest(res);
+    return sendBadRequest(res, error.message);
   }
 });
 
@@ -60,7 +60,7 @@ router.put('/:id', async (req, res) => {
   const error = validate(req.body);
   if (error) {
     console.log(error.details[0].message);
-    return sendBadRequest(res);
+    return sendBadRequest(res, error.details[0].message);
   }
   try {
 
@@ -72,7 +72,7 @@ router.put('/:id', async (req, res) => {
     res.json(result);
   } catch (error) {
     console.log(error.message);
-    return sendBadRequest(res);
+    return sendBadRequest(res, error.message);
   }
 });
 
@@ -83,7 +83,7 @@ router.delete('/:id', async (req, res) => {
     res.json(link);
   } catch (error) {
     console.log(error.message);
-    return sendBadRequest(res);
+    return sendBadRequest(res, error.message);
   }
 })
 

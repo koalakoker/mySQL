@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
   const error = validate(req.body);
   if (validate(req.body)) {
     console.log(error.details[0].message);
-    return sendBadRequest(res);
+    return sendBadRequest(res, error.details[0].message);
   }
   try {
     let config = new Config(req.body);
@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
     res.json(config);
   } catch (error) {
     console.log(error.message);
-    return sendBadRequest(res);
+    return sendBadRequest(res, error.message);
   }
 });
 
@@ -34,7 +34,7 @@ router.put('/', async (req, res) => {
   const error = validate(req.body);
   if (error) {
     console.log(error.details[0].message);
-    return sendBadRequest(res);
+    return sendBadRequest(res, error.details[0].message);
   }
   try {
     // Query
@@ -57,7 +57,7 @@ router.put('/', async (req, res) => {
     res.json(config);
   } catch (error) {
     console.log(error.message);
-    return sendBadRequest(res);
+    return sendBadRequest(res, error.message);
   }
 });
 

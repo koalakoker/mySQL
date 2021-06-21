@@ -89,7 +89,7 @@ exports.router.post('/', function (req, res) { return __awaiter(void 0, void 0, 
                 error = validate(req.body);
                 if (validate(req.body)) {
                     console.log(error.details[0].message);
-                    return [2 /*return*/, answers_1.sendBadRequest(res)];
+                    return [2 /*return*/, answers_1.sendBadRequest(res, error.details[0].message)];
                 }
                 _a.label = 1;
             case 1:
@@ -103,7 +103,7 @@ exports.router.post('/', function (req, res) { return __awaiter(void 0, void 0, 
             case 3:
                 error_1 = _a.sent();
                 console.log(error_1.message);
-                return [2 /*return*/, answers_1.sendBadRequest(res)];
+                return [2 /*return*/, answers_1.sendBadRequest(res, error_1.message)];
             case 4: return [2 /*return*/];
         }
     });
@@ -116,7 +116,7 @@ exports.router.put('/', function (req, res) { return __awaiter(void 0, void 0, v
                 error = validate(req.body);
                 if (error) {
                     console.log(error.details[0].message);
-                    return [2 /*return*/, answers_1.sendBadRequest(res)];
+                    return [2 /*return*/, answers_1.sendBadRequest(res, error.details[0].message)];
                 }
                 _a.label = 1;
             case 1:
@@ -141,7 +141,7 @@ exports.router.put('/', function (req, res) { return __awaiter(void 0, void 0, v
             case 4:
                 error_2 = _a.sent();
                 console.log(error_2.message);
-                return [2 /*return*/, answers_1.sendBadRequest(res)];
+                return [2 /*return*/, answers_1.sendBadRequest(res, error_2.message)];
             case 5: return [2 /*return*/];
         }
     });
