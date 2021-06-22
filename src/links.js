@@ -77,7 +77,9 @@ exports.router.get('/', function (req, res) { return __awaiter(void 0, void 0, v
         switch (_c.label) {
             case 0:
                 _b = (_a = res).json;
-                return [4 /*yield*/, Link.find({})];
+                return [4 /*yield*/, Link.find({})
+                        .select("_id name href level position")
+                        .sort('position')];
             case 1:
                 _b.apply(_a, [_c.sent()]);
                 return [2 /*return*/];
@@ -110,8 +112,8 @@ exports.router.post('/', function (req, res) { return __awaiter(void 0, void 0, 
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                error = validate(req.body);
-                if (validate(req.body)) {
+                error = validatePost(req.body);
+                if (validatePost(req.body)) {
                     console.log(error.details[0].message);
                     return [2 /*return*/, answers_1.sendBadRequest(res, error.details[0].message)];
                 }
@@ -149,7 +151,7 @@ exports.router.put('/:id', function (req, res) { return __awaiter(void 0, void 0
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                error = validate(req.body);
+                error = validatePut(req.body);
                 if (error) {
                     console.log(error.details[0].message);
                     return [2 /*return*/, answers_1.sendBadRequest(res, error.details[0].message)];
@@ -194,7 +196,7 @@ exports.router.delete('/:id', function (req, res) { return __awaiter(void 0, voi
         }
     });
 }); });
-function validate(link) {
+function validatePost(link) {
     var schema = Joi.object({
         name: Joi.string()
             .min(3)
@@ -208,6 +210,26 @@ function validate(link) {
             .min(1)
             .max(2)
             .required()
+    });
+    var error = schema.validate(link).error;
+    return error;
+}
+function validatePut(link) {
+    var schema = Joi.object({
+        name: Joi.string()
+            .min(3)
+            .max(30)
+            .required(),
+        href: Joi.string()
+            .uri()
+            .max(300)
+            .required(),
+        level: Joi.number()
+            .min(1)
+            .max(2)
+            .required(),
+        position: Joi.number()
+            .min(0)
     });
     var error = schema.validate(link).error;
     return error;

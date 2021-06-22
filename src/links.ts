@@ -14,7 +14,9 @@ const linkSchema = new mongoose.Schema({
 const Link = mongoose.model('Links', linkSchema);
 
 router.get('/', async (req, res) => {
-  res.json(await Link.find({}));
+  res.json(await Link.find({})
+    .select("_id name href level position")
+    .sort('position'));
 });
 
 router.get('/:id', async (req, res) => {
@@ -29,8 +31,8 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  const error = validate(req.body);
-  if (validate(req.body)) {
+  const error = validatePost(req.body);
+  if (validatePost(req.body)) {
     console.log(error.details[0].message);
     return sendBadRequest(res, error.details[0].message);
   }
@@ -57,7 +59,7 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-  const error = validate(req.body);
+  const error = validatePut(req.body);
   if (error) {
     console.log(error.details[0].message);
     return sendBadRequest(res, error.details[0].message);
@@ -87,7 +89,7 @@ router.delete('/:id', async (req, res) => {
   }
 })
 
-function validate(link) {
+function validatePost(link) {
   const schema = Joi.object({
     name: Joi.string()
       .min(3)
@@ -101,6 +103,28 @@ function validate(link) {
       .min(1)
       .max(2)
       .required()
+  })
+
+  const { error } = schema.validate(link);
+  return error;
+}
+
+function validatePut(link) {
+  const schema = Joi.object({
+    name: Joi.string()
+      .min(3)
+      .max(30)
+      .required(),
+    href: Joi.string()
+      .uri()
+      .max(300)
+      .required(),
+    level: Joi.number()
+      .min(1)
+      .max(2)
+      .required(),
+    position: Joi.number()
+      .min(0)
   })
 
   const { error } = schema.validate(link);
