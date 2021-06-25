@@ -8,7 +8,7 @@
   "main": "index.js",
   "scripts": {
     "serve": "nodemon",
-    "start": "nodemon"
+    "start": "node src/index.js"
   },
   "author": "koalakoker",
   "dependencies": {
