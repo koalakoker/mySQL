@@ -6,5 +6,5 @@
   "ignore": [
     "src/**/*.spec.ts"
   ],
-  "exec": "tsc"
+  "exec": "node src/index.js"
 }
