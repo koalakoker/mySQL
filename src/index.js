@@ -3,16 +3,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var config_1 = __importDefault(require("config"));
 var cors_1 = __importDefault(require("cors"));
 var express_1 = __importDefault(require("express"));
 var debug_1 = __importDefault(require("debug"));
 var mongoose_1 = __importDefault(require("mongoose"));
 var links_1 = require("./links");
-var config_1 = require("./config");
 var debug = debug_1.default("MyApp");
 var PORT = process.env.PORT || 5000;
 var app = express_1.default();
-mongoose_1.default.connect('mongodb://localhost:27017/Links', { useNewUrlParser: true, useUnifiedTopology: true })
+var url = config_1.default.get('dbConnection');
+if (!url) {
+    console.log("Fatal error: dbConnection not set in an environment variable");
+    process.exit(1);
+}
+mongoose_1.default.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(function () {
     console.log("Connected with db...");
 });
@@ -23,7 +28,6 @@ app.get('/', function (req, res) {
     res.send("Hello, please use the API");
 });
 app.use('/api/links', links_1.router);
-app.use('/api/config', config_1.router);
 app.listen(PORT, function () {
     console.log("Starting glink server...");
     console.log("Listening on " + PORT);

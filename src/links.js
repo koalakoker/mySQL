@@ -70,7 +70,7 @@ var linkSchema = new mongoose_1.default.Schema({
     level: { type: Number, required: true },
     position: { type: Number, required: true }
 });
-var Link = mongoose_1.default.model('Links', linkSchema);
+var Link = mongoose_1.default.model('links', linkSchema);
 exports.router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, _b;
     return __generator(this, function (_c) {

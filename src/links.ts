@@ -11,7 +11,7 @@ const linkSchema = new mongoose.Schema({
   level   : { type: Number, required: true },
   position: { type: Number, required: true } 
 });
-const Link = mongoose.model('Links', linkSchema);
+const Link = mongoose.model('links', linkSchema);
 
 router.get('/', async (req, res) => {
   res.json(await Link.find({})
