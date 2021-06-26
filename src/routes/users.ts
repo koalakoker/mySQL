@@ -1,5 +1,5 @@
+import _ from 'lodash';
 import { User, validateUser as validate } from '../models/user';
-import mongoose from 'mongoose';
 import express from 'express';
 export const router = express.Router();
 
@@ -10,16 +10,11 @@ router.post('/', async (req, res) => {
   let user = await User.findOne({ email: req.body.email });
   if (user) return res.status(400).send('User already registered.');
 
-  user = new User({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-    isAdmin: req.body.isAdmin
-  });
+  user = new User(_.pick(req.body, ['name', 'email', 'password', 'isAdmin']));
 
   try {
     await user.save();
-    res.send(user);  
+    res.send(_.pick(user, ['_id', 'name', 'email']));  
   } catch (error) {
     console.log(error.message);
   }
