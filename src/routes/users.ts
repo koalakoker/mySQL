@@ -6,6 +6,16 @@ import { User, validateUser as validate } from '../models/user';
 import express from 'express';
 export const router = express.Router();
 
+router.get('/', auth, async (req, res) => {
+  if (!req['user']['isAdmin']) return answer.userUnauthorized(res);
+
+  try {
+    res.send(await User.find({}).select('-password'));
+  } catch (error) {
+    return answer.serverError(res);
+  }
+})
+
 router.get('/me', auth, async (req, res) => {
   try {
     const user = await User.findById(req['user']['_id']).select('-password');
@@ -16,7 +26,9 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
+  if (!req['user']['isAdmin']) return answer.userUnauthorized(res);
+
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
   
