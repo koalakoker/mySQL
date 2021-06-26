@@ -1,15 +1,17 @@
+import config from 'config';
+import jwt from 'jsonwebtoken';
 import Joi from 'joi';
 import mongoose from 'mongoose';
 
-export const User = mongoose.model('User', new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
     minlength: 5,
     maxlength: 50
   },
-  email: { 
-    type: String, 
+  email: {
+    type: String,
     required: true,
     minlength: 5,
     maxlength: 255,
@@ -21,11 +23,17 @@ export const User = mongoose.model('User', new mongoose.Schema({
     minlength: 5,
     maxlength: 1024,
   },
-  isAdmin: { 
-    type: Boolean, 
+  isAdmin: {
+    type: Boolean,
     required: true
   }
-}));
+});
+
+userSchema.methods.generateAuthToken = function() {
+  return jwt.sign({ _id: this['_id'], isAdmin: this['isAdmin'] }, config.get('jwtPrivateKey'));
+}
+
+export const User = mongoose.model('User', userSchema);
 
 export function validateUser(user) {
   const schema = Joi.object({
