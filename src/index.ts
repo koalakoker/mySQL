@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 
 import { router as links } from './links';
 import { router as users } from './routes/users';
+import { router as auth  } from './routes/auth';
 
 const debug = Debug("MyApp");
 const PORT = process.env.PORT || 5000
@@ -14,6 +15,11 @@ const url = config.get('dbConnection');
 
 if (!url) {
   console.log("Fatal error: dbConnection not set in an environment variable");
+  process.exit(1);
+}
+
+if (!config.get('jwtPrivateKey')) {
+  console.log("Fatal error: jwtPrivateKey not set in an environment variable");
   process.exit(1);
 }
 
@@ -32,6 +38,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/links', links);
 app.use('/api/users', users);
+app.use('/api/auth' , auth);
 
 app.listen(PORT, () => {
   console.log("Starting glink server...");
