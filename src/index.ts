@@ -4,7 +4,8 @@ import express from 'express';
 import Debug from "debug";
 import mongoose from 'mongoose';
 
-import { router as links  } from './links';
+import { router as links } from './links';
+import { router as users } from './routes/users';
 
 const debug = Debug("MyApp");
 const PORT = process.env.PORT || 5000
@@ -16,7 +17,7 @@ if (!url) {
   process.exit(1);
 }
 
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
   .then(() => {
     console.log("Connected with db...");
   })
@@ -30,6 +31,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/links', links);
+app.use('/api/users', users);
 
 app.listen(PORT, () => {
   console.log("Starting glink server...");
