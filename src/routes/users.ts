@@ -1,8 +1,20 @@
+import * as answer from '../routes/answers'
+import { auth } from '../middleware/auth';
 import bcrypt from 'bcrypt';
 import _ from 'lodash';
 import { User, validateUser as validate } from '../models/user';
 import express from 'express';
 export const router = express.Router();
+
+router.get('/me', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req['user']['_id']).select('-password');
+    res.send(user);
+  } catch (error) {
+    console.log(error);
+    answer.notFound(res);
+  }
+});
 
 router.post('/', async (req, res) => {
   const { error } = validate(req.body);
