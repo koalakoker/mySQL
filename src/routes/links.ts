@@ -13,7 +13,8 @@ router.get('/', auth, async (req, res) => {
 
 router.get('/:id', auth, async (req, res) => {
   try {
-    const link = await Link.find({ _id: req.params.id });
+    const userID = req['user']['_id'];
+    const link = await Link.find({ _id: req.params.id, user: userID });
     if (link.length == 0) return answer.notFound(res);
     res.send(link);
   } catch (error) {
@@ -60,14 +61,15 @@ router.put('/:id', auth, async (req, res) => {
     return answer.badRequest(res, error.details[0].message);
   }
   try {
-    const result = await Link.findByIdAndUpdate({ _id: req.params.id },
-      { $set: req.body },
-      {
-        new: true,
-        useFindAndModify: false
-      });
-    if (!result) return answer.notFound(res);
-    res.send(result);
+    const userID = req['user']['_id'];
+    let link = await Link.findOne({ _id: req.params.id});
+    if (!link) return answer.notFound(res);
+    if (link['user'] != userID) return answer.userUnauthorized(res);    
+    link['name']     = req.body.name;
+    link['href']     = req.body.href;
+    link['position'] = req.body.position;
+    await link.save();
+    res.send(link);
   } catch (error) {
     console.log(error.message);
     return answer.badRequest(res, error.message);
@@ -76,8 +78,11 @@ router.put('/:id', auth, async (req, res) => {
 
 router.delete('/:id', auth, async (req, res) => {
   try {
-    const link = await Link.findByIdAndRemove(req.params.id);
+    const userID = req['user']['_id'];
+    let link = await Link.findOne({ _id: req.params.id });
     if (!link) return answer.notFound(res);
+    if (link['user'] != userID) return answer.userUnauthorized(res);
+    link.remove();
     res.send(link);
   } catch (error) {
     console.log(error.message);
