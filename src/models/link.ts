@@ -17,12 +17,17 @@ const linkSchema = new mongoose.Schema({
   position: {
     type: Number,
     required: true
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'users',
+    required: true
   }
 });
 
 export const Link = mongoose.model('links', linkSchema);
 
-export function validateUserPost(link) {
+export function validateLinkPost(link) {
   const schema = Joi.object({
     name:  Joi.string().min(5).max(50) .required(),
     href:  Joi.string().min(5).max(255).required().uri()
@@ -31,7 +36,7 @@ export function validateUserPost(link) {
   return schema.validate(link);
 }
 
-export function validateUserPut(link) {
+export function validateLinkPut(link) {
   const schema = Joi.object({
     name: Joi.string().min(5).max(50) .required(),
     href: Joi.string().min(5).max(255).required().uri(),

@@ -1,11 +1,12 @@
 import { auth } from '../middleware/auth';
-import { Link, validateUserPost, validateUserPut } from '../models/link'
+import { Link, validateLinkPost, validateLinkPut } from '../models/link'
 import express from 'express';
 import * as answer from './answers';
 export const router = express.Router();
 
 router.get('/', auth, async (req, res) => {
-  res.send(await Link.find({})
+  const userID = req['user']['_id'];
+  res.send(await Link.find({ user: userID })
     .select("_id name href position")
     .sort('position'));
 });
@@ -35,7 +36,7 @@ async function nextPosition() {
 }
 
 router.post('/', auth, async (req, res) => {
-  const { error } = validateUserPost(req.body);
+  const { error } = validateLinkPost(req.body);
   if (error) {
     console.log(error.details[0].message);
     return answer.badRequest(res, error.details[0].message);
@@ -43,6 +44,7 @@ router.post('/', auth, async (req, res) => {
   try {
     let link = new Link(req.body);
     link['position'] = await nextPosition();
+    link['user'] = req['user']['_id'];
     link = await link.save();
     res.send(link);
   } catch (error) {
@@ -52,7 +54,7 @@ router.post('/', auth, async (req, res) => {
 });
 
 router.put('/:id', auth, async (req, res) => {
-  const { error } = validateUserPut(req.body);
+  const { error } = validateLinkPut(req.body);
   if (error) {
     console.log(error.details[0].message);
     return answer.badRequest(res, error.details[0].message);
