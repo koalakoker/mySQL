@@ -33,7 +33,7 @@ userSchema.methods.generateAuthToken = function() {
   return jwt.sign({ _id: this['_id'], isAdmin: this['isAdmin'] }, config.get('jwtPrivateKey'));
 }
 
-export const User = mongoose.model('User', userSchema);
+export const User = mongoose.model('users', userSchema);
 
 export function validateUser(user) {
   const schema = Joi.object({

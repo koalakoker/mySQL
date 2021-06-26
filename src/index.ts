@@ -4,14 +4,14 @@ import express from 'express';
 import Debug from "debug";
 import mongoose from 'mongoose';
 
-import { router as links } from './links';
+import { router as links } from './routes/links';
 import { router as users } from './routes/users';
 import { router as auth  } from './routes/auth';
 
 const debug = Debug("MyApp");
 const PORT = process.env.PORT || 5000
 const app = express();
-const url = config.get('dbConnection');
+const url: string = config.get('dbConnection');
 
 if (!url) {
   console.log("Fatal error: dbConnection not set in an environment variable");
