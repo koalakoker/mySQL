@@ -29,7 +29,7 @@ mongoose_1.default.connect(url, { useNewUrlParser: true, useUnifiedTopology: tru
 });
 mongoose_1.default.set('useFindAndModify', false);
 app.use(express_1.default.json());
-app.use(cors_1.default());
+app.use(cors_1.default({ 'exposedHeaders': ['x-auth-token'] }));
 app.get('/', function (req, res) {
     res.send("Hello, please use the API");
 });

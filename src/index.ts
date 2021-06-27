@@ -30,7 +30,7 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useCrea
 mongoose.set('useFindAndModify', false);
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({ 'exposedHeaders': ['x-auth-token']}));
 
 app.get('/', (req, res) => {
   res.send("Hello, please use the API");
