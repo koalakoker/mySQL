@@ -5,6 +5,13 @@ import { auth } from '../middleware/auth';
 
 export const router = express.Router();
 
+router.get('/', auth, async (req, res) => {
+  const userID = req['user']['_id'];
+  res.send(await WebPass.find({ userid: userID })
+    .select("_id name url username pass registrationDate expirationDate")
+    .sort('name'));
+});
+
 router.post('/', auth, async (req, res) => {
   const { error } = validateWebPass(req.body);
   if (error) {
