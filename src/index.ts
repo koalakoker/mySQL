@@ -4,11 +4,12 @@ import express from 'express';
 import Debug from "debug";
 import mongoose from 'mongoose';
 
-import { router as links }    from './routes/links';
-import { router as users }    from './routes/users';
-import { router as auth  }    from './routes/auth';
-import { router as webPass }  from './routes/webPass';
-import { router as category } from './routes/category';
+import { router as relWebCat } from './routes/relWebCat';
+import { router as links }     from './routes/links';
+import { router as users }     from './routes/users';
+import { router as auth  }     from './routes/auth';
+import { router as webPass }   from './routes/webPass';
+import { router as category }  from './routes/category';
 
 const debug = Debug("MyApp");
 const PORT = process.env.PORT || 5000
@@ -38,11 +39,12 @@ app.get('/', (req, res) => {
   res.send("Hello, please use the API");
 });
 
-app.use('/api/category', category);
-app.use('/api/webpass' , webPass);
-app.use('/api/links'   , links);
-app.use('/api/users'   , users);
-app.use('/api/auth'    , auth);
+app.use('/api/relWebCat', relWebCat);
+app.use('/api/category' , category);
+app.use('/api/webpass'  , webPass);
+app.use('/api/links'    , links);
+app.use('/api/users'    , users);
+app.use('/api/auth'     , auth);
 
 app.listen(PORT, () => {
   console.log("Starting glink server...");
