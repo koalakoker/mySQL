@@ -5,7 +5,7 @@ const webPassSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    minlength: 5,
+    minlength: 3,
     maxlength: 255
   },
   url: {
@@ -17,7 +17,7 @@ const webPassSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    minlength: 5,
+    minlength: 3,
     maxlength: 255
   },
   userid: {
@@ -28,19 +28,19 @@ const webPassSchema = new mongoose.Schema({
   pass: {
     type: String,
     required: true,
-    minlength: 5,
+    minlength: 3,
     maxlength: 255
   },
   registrationDate: {
     type: String,
     required: true,
-    minlength: 5,
+    minlength: 3,
     maxlength: 255
   },
   expirationDate: {
     type: String,
     required: true,
-    minlength: 5,
+    minlength: 3,
     maxlength: 255
   }
 });
@@ -49,12 +49,12 @@ export const WebPass = mongoose.model('webPass', webPassSchema);
 
 export function validateWebPass(webPass) {
   const schema = Joi.object({
-    name:             Joi.string().min(5).max(255).required(),
-    url:              Joi.string().min(5).max(255).required(),
-    username:         Joi.string().min(5).max(255).required(),
-    pass:             Joi.string().min(5).max(255).required(),
-    registrationDate: Joi.string().min(5).max(255).required(),
-    expirationDate:   Joi.string().min(5).max(255).required()
+    name:             Joi.string().min(3).max(255).required(),
+    url:              Joi.string().min(3).max(255).required(),
+    username:         Joi.string().min(3).max(255).required(),
+    pass:             Joi.string().min(3).max(255).required(),
+    registrationDate: Joi.string().min(3).max(255).required(),
+    expirationDate:   Joi.string().min(3).max(255).required()
   })
 
   return schema.validate(webPass);
