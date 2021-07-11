@@ -28,3 +28,17 @@ router.post('/', auth, async (req, res) => {
     return answer.badRequest(res, error.message);
   }
 });
+
+router.delete('/:id', auth, async (req, res) => {
+  try {
+    const userID = req['user']['_id'];
+    let webPass = await WebPass.findOne({ _id: req.params.id });
+    if (!webPass) return answer.notFound(res);
+    if (webPass['userid'] != userID) return answer.userUnauthorized(res);
+    webPass.remove();
+    res.send(webPass);
+  } catch (error) {
+    console.log(error.message);
+    return answer.badRequest(res, error.message);
+  }
+});
