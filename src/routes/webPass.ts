@@ -29,6 +29,31 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
+router.put('/:id', auth, async (req, res) => {
+  const { error } = validateWebPass(req.body);
+  if (error) {
+    console.log(error.details[0].message);
+    return answer.badRequest(res, error.details[0].message);
+  }
+  try {
+    const userID = req['user']['_id'];
+    let webPass = await WebPass.findOne({ _id: req.params.id });
+    if (!webPass) return answer.notFound(res);
+    if (webPass['userid'] != userID) return answer.userUnauthorized(res);
+    webPass['name']             = req.body.name;
+    webPass['url']              = req.body.url;
+    webPass['username']         = req.body.username;
+    webPass['pass']             = req.body.pass;
+    webPass['registrationDate'] = req.body.registrationDate;
+    webPass['expirationDate']   = req.body.expirationDate;
+    await webPass.save();
+    res.send(webPass);
+  } catch (error) {
+    console.log(error.message);
+    return answer.badRequest(res, error.message);
+  }
+});
+
 router.delete('/:id', auth, async (req, res) => {
   try {
     const userID = req['user']['_id'];
