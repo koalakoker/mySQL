@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema({
   },
   isAdmin: {
     type: Boolean,
+    required: true,
+  },
+  resetpass: {
+    type: Boolean,
     required: true
   }
 });
@@ -35,12 +39,31 @@ userSchema.methods.generateAuthToken = function() {
 
 export const User = mongoose.model('users', userSchema);
 
-export function validateUser(user) {
+export function validateUserPutForUser(user) {
   const schema = Joi.object({
-    name    : Joi.string().min(5).max(50) .required(),
-    email   : Joi.string().min(5).max(255).required().email(),
-    password: Joi.string().min(5).max(255).required(),
-    isAdmin : Joi.boolean().required()
+    name      : Joi.string().min(5).max(50) .required(),
+    password  : Joi.string().min(5).max(255).required()
+  });
+
+  return schema.validate(user);
+}
+
+export function validateUserPutForAdmin(user) {
+  const schema = Joi.object({
+    isAdmin   : Joi.boolean().required(),
+    resetpass : Joi.boolean().required()
+  });
+
+  return schema.validate(user);
+}
+
+export function validateUserPost(user) {
+  const schema = Joi.object({
+    name      : Joi.string().min(5).max(50) .required(),
+    email     : Joi.string().min(5).max(255).required().email(),
+    password  : Joi.string().min(5).max(255).required(),
+    isAdmin   : Joi.boolean().required(),
+    resetpass : Joi.boolean().required()
   });
 
   return schema.validate(user);
