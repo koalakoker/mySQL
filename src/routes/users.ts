@@ -77,8 +77,9 @@ router.put('/:id', auth, async (req, res) => {
       return answer.badRequest(res, error.details[0].message);
     }
     const userID = req['user']['_id'];
-    if (user['userid'] != userID) return answer.userUnauthorized(res);
-    user['password'] = req.body.password;
+    if (user['_id'] != userID) return answer.userUnauthorized(res);
+    const salt = await bcrypt.genSalt(10);
+    user['password'] = await bcrypt.hash(req.body.password, salt);
   } else {
     // Admin
     const { error } = validateUserPutForAdmin(req.body);
@@ -88,12 +89,12 @@ router.put('/:id', auth, async (req, res) => {
     }
     user['isAdmin'] = req.body.isAdmin;
     user['resetpass'] = req.body.resetpass;
-    try {
-      await user.save();
-      res.send(user);
-    } catch (error) {
-      console.log(error.message);
-      return answer.badRequest(res, error.message);
-    }
+  }
+  try {
+    await user.save();
+    res.send(user);
+  } catch (error) {
+    console.log(error.message);
+    return answer.badRequest(res, error.message);
   }
 });
