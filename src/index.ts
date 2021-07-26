@@ -10,6 +10,7 @@ import { router as users }     from './routes/users';
 import { router as auth  }     from './routes/auth';
 import { router as webPass }   from './routes/webPass';
 import { router as category }  from './routes/category';
+import { router as notes }     from './routes/notes' 
 
 const debug = Debug("MyApp");
 const PORT = process.env.PORT || 5000
@@ -44,6 +45,7 @@ app.use('/api/category' , category);
 app.use('/api/webpass'  , webPass);
 app.use('/api/links'    , links);
 app.use('/api/users'    , users);
+app.use('/api/notes'    , notes);
 app.use('/api/auth'     , auth);
 
 app.listen(PORT, () => {
