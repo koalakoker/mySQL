@@ -26,7 +26,12 @@ async function test() {
     w: Math.floor(Math.random() * 800),
     h: Math.floor(Math.random() * 600),
   };
-  await create(user, name, JSON.stringify(drawing));
+  await create(
+    "drawings",
+    { col: "user", value: user },
+    { col: "name", value: name },
+    { col: "drawing", value: JSON.stringify(drawing) }
+  );
 }
 
 async function getRandomName() {
@@ -41,10 +46,15 @@ function manageError(err) {
   if (err) throw err;
 }
 
-async function create(user, name, drawing) {
+async function create(table, user, name, drawing) {
   const query =
-    "INSERT INTO drawings (user,name,drawing) VALUES " +
-    packValues("(", ", ", ")", user, name, drawing);
+    "INSERT INTO " +
+    table +
+    " " +
+    packValues("(", ", ", ")", "", user.col, name.col, drawing.col) +
+    " VALUES " +
+    packValues("(", ", ", ")", "'", user.value, name.value, drawing.value);
+  //console.log(query);
   con.query(query);
 }
 
@@ -56,12 +66,13 @@ function getAll() {
 }
 
 function displayTable(table) {
-  console.log(packValues("|", "|", "|", "id", "user", "name", "drawing"));
+  console.log(packValues("|", "|", "|", "", "id", "user", "name", "drawing"));
   table.forEach((packet) => {
     const row = packValues(
       "|",
       "|",
       "|",
+      "",
       packet.id,
       packet.user,
       packet.name,
@@ -71,20 +82,20 @@ function displayTable(table) {
   });
 }
 
-function packValues(bStr, sStr, eStr, ...args) {
-  let str = bStr;
+function packValues(beginStr, separatorStr, endStr, strSeparatorCh, ...args) {
+  let str = beginStr;
   for (let i = 0; i < args.length; i++) {
     if (i > 0) {
-      str += sStr;
+      str += separatorStr;
     }
-    str += format(args[i]);
+    str += format(args[i], strSeparatorCh);
   }
-  str += eStr;
+  str += endStr;
   return str;
 }
 
-function format(param) {
-  return "'" + param + "'";
+function format(param, strSeparator) {
+  return strSeparator + param + strSeparator;
 }
 
 function confGet(str) {
