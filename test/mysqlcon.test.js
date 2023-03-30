@@ -1,12 +1,16 @@
 import fetch from "node-fetch";
-import { createMySQLConnection } from "./mysqlcon.js";
+import { createMySQLConnection } from "../mysqlcon.js";
+import { assert } from "chai";
 
-const con = createMySQLConnection();
-await test();
-con.getAll();
-con.end();
+describe("MySQLcon tests", function () {
+  it("Create", async function () {
+    const con = createMySQLConnection();
+    await test(con);
+    con.end();
+  });
+});
 
-async function test() {
+async function test(con) {
   const user = await getRandomName();
   const name = await getRandomName();
   const drawing = {
