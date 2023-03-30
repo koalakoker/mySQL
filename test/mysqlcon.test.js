@@ -1,11 +1,13 @@
 import fetch from "node-fetch";
 import { createMySQLConnection } from "../mysqlcon.js";
+import { Element } from "../element.js";
 import { assert } from "chai";
 
 describe("MySQLcon tests", function () {
   it("Create", async function () {
     const con = createMySQLConnection();
     await test(con);
+    con.getAll();
     con.end();
   });
 });
@@ -17,12 +19,11 @@ async function test(con) {
     w: Math.floor(Math.random() * 800),
     h: Math.floor(Math.random() * 600),
   };
-  await con.create(
-    "drawings",
-    { col: "user", value: user },
-    { col: "name", value: name },
-    { col: "drawing", value: JSON.stringify(drawing) }
-  );
+  const data = [];
+  data.push(new Element("user", user));
+  data.push(new Element("name", name));
+  data.push(new Element("drawing", JSON.stringify(drawing)));
+  const newId = await con.create("drawings", data);
 }
 
 async function getRandomName() {
