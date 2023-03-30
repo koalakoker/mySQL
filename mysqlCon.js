@@ -1,4 +1,5 @@
 import mysql from "mysql";
+import config from "config";
 
 export class MySQLcon {
   constructor(host, user, pass, db) {
@@ -73,4 +74,23 @@ export class MySQLcon {
   format(param, strSeparator) {
     return strSeparator + param + strSeparator;
   }
+}
+
+export function createMySQLConnection() {
+  const host = confGet("mysql_dburl");
+  const user = confGet("mysql_user");
+  const pass = confGet("mysql_password");
+  const db = "sketch";
+  return new MySQLcon(host, user, pass, db);
+}
+
+function confGet(str) {
+  const value = config.get(str);
+  if (!value) {
+    console.log(
+      "Fatal error: '" + str + "' not set in an environment variable"
+    );
+    process.exit(1);
+  }
+  return value;
 }
