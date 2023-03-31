@@ -61,6 +61,15 @@ export class MySQLcon {
       });
     });
   }
+  delete(table, id) {
+    return new Promise((resolve, reject) => {
+      const query = "DELETE FROM " + table + " WHERE `id`=" + id;
+      this.con.query(query, (error, result) => {
+        if (error) reject(error);
+        resolve(result);
+      });
+    });
+  }
   end() {
     this.con.end();
   }

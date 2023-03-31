@@ -28,6 +28,11 @@ async function CURDtest(con) {
   assert.equal(getElement[0].user, data.at(0).value);
   assert.equal(getElement[0].name, data.at(1).value);
   assert.equal(getElement[0].drawing, data.at(2).value);
+
+  await con.delete("drawings", id);
+
+  getElement = await con.get("drawings", id);
+  assert.equal(getElement.length, 0);
 }
 
 async function getNewData() {
