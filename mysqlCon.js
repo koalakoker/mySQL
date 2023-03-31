@@ -14,61 +14,42 @@ export class MySQLcon {
       if (err) throw err;
     });
   }
-  create(table, data) {
+  query(query) {
     return new Promise((resolve, reject) => {
-      const query =
-        "INSERT INTO " +
-        table +
-        " " +
-        this.packValues("(", ", ", ")", "", data, "col") +
-        " VALUES " +
-        this.packValues("(", ", ", ")", "'", data, "val");
-      //console.log(query);
       this.con.query(query, (error, result) => {
         if (error) reject(error);
-        resolve(result.insertId);
+        resolve(result);
       });
     });
+  }
+  async create(table, data) {
+    const query =
+      "INSERT INTO " +
+      table +
+      " " +
+      this.packValues("(", ", ", ")", "", data, "col") +
+      " VALUES " +
+      this.packValues("(", ", ", ")", "'", data, "val");
+    const result = await this.query(query);
+    return result.insertId;
   }
   get(table, id) {
-    return new Promise((resolve, reject) => {
-      const query = "SELECT * FROM " + table + " WHERE `id`=" + id;
-      this.con.query(query, (error, result) => {
-        if (error) reject(error);
-        resolve(result);
-      });
-    });
+    const query = "SELECT * FROM " + table + " WHERE `id`=" + id;
+    return this.query(query);
   }
-  getAll() {
-    this.con.query("SELECT * FROM drawings", (error, results) => {
-      if (error) throw error;
-      this.displayTable(results);
-    });
+  async getAll(table) {
+    const query = "SELECT * FROM " + table;
+    const results = await this.query(query);
+    this.displayTable(results);
   }
   update(table, id, data) {
-    return new Promise((resolve, reject) => {
-      const query =
-        "UPDATE " +
-        table +
-        " SET " +
-        this.setValues(data) +
-        " WHERE `id`=" +
-        id;
-      //console.log(query);
-      this.con.query(query, (error, result) => {
-        if (error) reject(error);
-        resolve(result);
-      });
-    });
+    const query =
+      "UPDATE " + table + " SET " + this.setValues(data) + " WHERE `id`=" + id;
+    return this.query(query);
   }
   delete(table, id) {
-    return new Promise((resolve, reject) => {
-      const query = "DELETE FROM " + table + " WHERE `id`=" + id;
-      this.con.query(query, (error, result) => {
-        if (error) reject(error);
-        resolve(result);
-      });
-    });
+    const query = "DELETE FROM " + table + " WHERE `id`=" + id;
+    return this.query(query);
   }
   end() {
     this.con.end();

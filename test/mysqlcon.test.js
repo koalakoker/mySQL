@@ -6,7 +6,7 @@ describe("MySQLcon tests", function () {
   it("CURD tests", async function () {
     const con = createMySQLConnection();
     await CURDtest(con);
-    con.getAll();
+    con.getAll("drawings");
     con.end();
   });
 });
