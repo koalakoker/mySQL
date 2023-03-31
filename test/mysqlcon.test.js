@@ -1,4 +1,3 @@
-import fetch from "node-fetch";
 import { createMySQLConnection } from "../mysqlcon.js";
 import { Element } from "../element.js";
 import { assert } from "chai";
@@ -14,7 +13,7 @@ describe("MySQLcon tests", function () {
 async function CURDtest(con) {
   let data = await getNewData();
   const id = await con.create("drawings", data);
-  const getElement = await con.get("drawings", id);
+  let getElement = await con.get("drawings", id);
   assert.equal(getElement.length, 1);
   assert.equal(getElement[0].user, data.at(0).value);
   assert.equal(getElement[0].name, data.at(1).value);
@@ -44,10 +43,14 @@ async function getNewData() {
   return data;
 }
 
-async function getRandomName() {
-  const response = await fetch(
-    "https://random-word-api.herokuapp.com/word?lang=it"
-  );
-  const text = await response.text();
-  return JSON.parse(text)[0];
+function getRandomName() {
+  let str = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const charactersLength = characters.length;
+  const l = Math.floor(Math.random() * 5) + 5;
+  for (let i = 0; i < l; i++) {
+    str += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return str;
 }

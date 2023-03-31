@@ -57,7 +57,6 @@ export class MySQLcon {
       //console.log(query);
       this.con.query(query, (error, result) => {
         if (error) reject(error);
-        console.log("here");
         resolve(result);
       });
     });
