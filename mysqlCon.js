@@ -45,6 +45,23 @@ export class MySQLcon {
       this.displayTable(results);
     });
   }
+  update(table, id, data) {
+    return new Promise((resolve, reject) => {
+      const query =
+        "UPDATE " +
+        table +
+        " SET " +
+        this.setValues(data) +
+        " WHERE `id`=" +
+        id;
+      //console.log(query);
+      this.con.query(query, (error, result) => {
+        if (error) reject(error);
+        console.log("here");
+        resolve(result);
+      });
+    });
+  }
   end() {
     this.con.end();
   }
@@ -76,6 +93,16 @@ export class MySQLcon {
       str += this.format(data[i].get(sel), strSeparatorCh);
     }
     str += endStr;
+    return str;
+  }
+  setValues(data) {
+    let str = "";
+    for (let i = 0; i < data.length; i++) {
+      if (i > 0) {
+        str += ", ";
+      }
+      str += data[i].col + "='" + data[i].value + "'";
+    }
     return str;
   }
   format(param, strSeparator) {
