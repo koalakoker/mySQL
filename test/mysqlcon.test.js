@@ -23,7 +23,7 @@ async function test(con) {
   data.push(new Element("name", name));
   data.push(new Element("drawing", JSON.stringify(drawing)));
   const id = await con.create("drawings", data);
-  const getElement = await con.get(id);
+  const getElement = await con.get("drawings", id);
   assert.equal(getElement.length, 1);
   assert.equal(getElement[0].user, user);
   assert.equal(getElement[0].name, name);
