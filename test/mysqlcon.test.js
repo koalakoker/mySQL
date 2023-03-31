@@ -7,7 +7,6 @@ describe("MySQLcon tests", function () {
   it("Create", async function () {
     const con = createMySQLConnection();
     await test(con);
-    con.getAll();
     con.end();
   });
 });
@@ -23,7 +22,12 @@ async function test(con) {
   data.push(new Element("user", user));
   data.push(new Element("name", name));
   data.push(new Element("drawing", JSON.stringify(drawing)));
-  const newId = await con.create("drawings", data);
+  const id = await con.create("drawings", data);
+  const getElement = await con.get(id);
+  assert.equal(getElement.length, 1);
+  assert.equal(getElement[0].user, user);
+  assert.equal(getElement[0].name, name);
+  assert.equal(getElement[0].drawing, JSON.stringify(drawing));
 }
 
 async function getRandomName() {

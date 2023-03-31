@@ -30,6 +30,16 @@ export class MySQLcon {
       });
     });
   }
+  get(id) {
+    return new Promise((resolve, reject) => {
+      const query = "SELECT * FROM `drawings` WHERE `id`=" + id;
+      this.con.query(query, (error, result) => {
+        if (error) reject(error);
+        console.log(result);
+        resolve(result);
+      });
+    });
+  }
   getAll() {
     this.con.query("SELECT * FROM drawings", (error, results) => {
       if (error) throw error;
