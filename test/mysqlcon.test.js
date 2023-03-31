@@ -6,6 +6,7 @@ describe("MySQLcon tests", function () {
   it("CURD tests", async function () {
     const con = createMySQLConnection();
     await CURDtest(con);
+    con.getAll();
     con.end();
   });
 });
@@ -42,7 +43,6 @@ async function getNewData() {
   data.push(new Element("drawing", JSON.stringify(drawing)));
   return data;
 }
-
 function getRandomName() {
   let str = "";
   const characters =
