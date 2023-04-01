@@ -7,13 +7,6 @@ describe("MySQLcon tests", function () {
   it("CURD tests", async function () {
     await CURDtest(con);
   });
-  it("Truncate test", async function () {
-    let data = getNewData();
-    const id = await con.create("drawings", data);
-    await con.truncate("drawings");
-    const results = await con.getAll("drawings");
-    assert.equal(results.length, 0);
-  });
   it("Select all from user x", async function () {
     let data = getNewData();
     const user = data.at(0);
@@ -28,6 +21,13 @@ describe("MySQLcon tests", function () {
 
     const results = await con.filterBy("drawings", user);
     assert.equal(results.length, 5);
+  });
+  it("Truncate test", async function () {
+    let data = getNewData();
+    const id = await con.create("drawings", data);
+    await con.truncate("drawings");
+    const results = await con.getAll("drawings");
+    assert.equal(results.length, 0);
     con.end();
   });
 });

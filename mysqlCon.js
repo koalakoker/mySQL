@@ -69,6 +69,9 @@ export class MySQLcon {
   }
 
   displayTable(table) {
+    if (table.length === 0) {
+      return;
+    }
     const data = [];
     data.push(new Element("id", ""));
     data.push(new Element("user", ""));

@@ -1,5 +1,6 @@
 import { createMySQLConnection, MySQLcon } from "./mysqlCon.js";
 
 const con = createMySQLConnection();
-await con.getAll("drawings");
+const res = await con.getAll("drawings");
+con.displayTable(res);
 process.exit(0);
