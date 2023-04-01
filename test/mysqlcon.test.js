@@ -3,16 +3,37 @@ import { Element } from "../element.js";
 import { assert } from "chai";
 
 describe("MySQLcon tests", function () {
+  const con = createMySQLConnection();
   it("CURD tests", async function () {
-    const con = createMySQLConnection();
     await CURDtest(con);
-    con.getAll("drawings");
+  });
+  it("Truncate test", async function () {
+    let data = getNewData();
+    const id = await con.create("drawings", data);
+    await con.truncate("drawings");
+    const results = await con.getAll("drawings");
+    assert.equal(results.length, 0);
+  });
+  it("Select all from user x", async function () {
+    let data = getNewData();
+    const user = data.at(0);
+
+    for (let i = 0; i < 10; i++) {
+      data = getNewData();
+      if (i % 2 == 0) {
+        data[0] = user;
+      }
+      await con.create("drawings", data);
+    }
+
+    const results = await con.filterBy("drawings", user);
+    assert.equal(results.length, 5);
     con.end();
   });
 });
 
 async function CURDtest(con) {
-  let data = await getNewData();
+  let data = getNewData();
   const id = await con.create("drawings", data);
   let getElement = await con.get("drawings", id);
   assert.equal(getElement.length, 1);
@@ -20,7 +41,7 @@ async function CURDtest(con) {
   assert.equal(getElement[0].name, data.at(1).value);
   assert.equal(getElement[0].drawing, data.at(2).value);
 
-  data = await getNewData();
+  data = getNewData();
   await con.update("drawings", id, data);
 
   getElement = await con.get("drawings", id);
@@ -35,9 +56,9 @@ async function CURDtest(con) {
   assert.equal(getElement.length, 0);
 }
 
-async function getNewData() {
-  const user = await getRandomName();
-  const name = await getRandomName();
+function getNewData() {
+  const user = getRandomName();
+  const name = getRandomName();
   const drawing = {
     w: Math.floor(Math.random() * 800),
     h: Math.floor(Math.random() * 600),

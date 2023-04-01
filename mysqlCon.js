@@ -37,10 +37,19 @@ export class MySQLcon {
     const query = "SELECT * FROM " + table + " WHERE `id`=" + id;
     return this.query(query);
   }
-  async getAll(table) {
+  filterBy(table, element) {
+    const query =
+      "SELECT * FROM " +
+      table +
+      " WHERE " +
+      element.col +
+      " = " +
+      this.format(element.value, '"');
+    return this.query(query);
+  }
+  getAll(table) {
     const query = "SELECT * FROM " + table;
-    const results = await this.query(query);
-    this.displayTable(results);
+    return this.query(query);
   }
   update(table, id, data) {
     const query =
@@ -49,6 +58,10 @@ export class MySQLcon {
   }
   delete(table, id) {
     const query = "DELETE FROM " + table + " WHERE `id`=" + id;
+    return this.query(query);
+  }
+  truncate(table) {
+    const query = "TRUNCATE " + table;
     return this.query(query);
   }
   end() {
