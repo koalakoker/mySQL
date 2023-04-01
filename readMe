@@ -1,0 +1,13 @@
+Open three terminal
+
+terminal 1
+cd src
+nodemon
+
+termina 2
+nodemon
+
+terminal 3
+mongod --dbpath=/Users/koalakoker/data/db
+
+to install it download mongodb from web and copy bins in bin folder 
