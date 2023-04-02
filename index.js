@@ -1,4 +1,4 @@
-import { createMySQLConnection, MySQLcon } from "./mysqlCon.js";
+import { createMySQLConnection } from "./mysqlCon.js";
 
 const con = createMySQLConnection();
 const res = await con.getAll("drawings");
