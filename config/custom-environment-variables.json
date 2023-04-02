@@ -1,5 +1,4 @@
 {
-  "dbConnection": "glinks_dbConnection",
   "jwtPrivateKey": "glinks_jwtPrivateKey",
   "mysql_user": "mysql_user",
   "mysql_password": "mysql_password",

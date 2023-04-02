@@ -1,5 +1,4 @@
 {
-  "dbConnection": "",
   "jwtPrivateKey": "",
   "mysql_user": "",
   "mysql_password": "",
