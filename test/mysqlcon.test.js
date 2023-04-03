@@ -19,7 +19,7 @@ describe("MySQLcon tests", function () {
       await con.create("drawings", data);
     }
 
-    const results = await con.filterBy("drawings", user);
+    const results = await con.filterBy("drawings", user.col, user.value);
     assert.equal(results.length, 5);
   });
   it("Truncate test", async function () {
@@ -34,12 +34,11 @@ describe("MySQLcon tests", function () {
 
 async function CURDtest(con) {
   let data = getNewData();
-  const id = await con.create("drawings", data);
-  let getElement = await con.get("drawings", id);
-  assert.equal(getElement.length, 1);
-  assert.equal(getElement[0].user, data.at(0).value);
-  assert.equal(getElement[0].name, data.at(1).value);
-  assert.equal(getElement[0].drawing, data.at(2).value);
+  let getElement = await con.create("drawings", data);
+  const id = getElement.id;
+  assert.equal(getElement.user, data.at(0).value);
+  assert.equal(getElement.name, data.at(1).value);
+  assert.equal(getElement.drawing, data.at(2).value);
 
   data = getNewData();
   await con.update("drawings", id, data);
