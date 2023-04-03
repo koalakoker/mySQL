@@ -1,9 +1,8 @@
 import express from "express";
-import { validateDrawing } from "../models/drawing.js";
+import { Drawing, validateDrawing } from "../models/drawing.js";
 import * as answer from "./answers.js";
 import { auth } from "../middleware/auth.js";
 import { createMySQLConnection } from "../../mysqlCon.js";
-import { Element } from "../../element.js";
 
 export const router = express.Router();
 
@@ -28,12 +27,10 @@ router.post("/", auth, async (req, res) => {
   }
   try {
     const con = createMySQLConnection();
-    const data = [];
-    data.push(new Element("user", req["user"]["_id"]));
-    data.push(new Element("name", req.body.name));
-    data.push(new Element("drawing", JSON.stringify(req.body.drawing)));
-    const results = await con.create("drawings", data);
-    res.send("ok");
+    req.body.user = req["user"]["_id"];
+    const drawing = new Drawing(req.body);
+    const results = await con.create("drawings", drawing);
+    res.send(JSON.stringify(results));
     con.end();
 
     // let webPass = new WebPass(req.body);

@@ -31,7 +31,8 @@ export class MySQLcon {
       " VALUES " +
       this.packValues("(", ", ", ")", "'", data, "val");
     const result = await this.query(query);
-    return result.insertId;
+    const insertedRow = await this.get(table, result.insertId);
+    return insertedRow.at(0);
   }
   get(table, id) {
     const query = "SELECT * FROM " + table + " WHERE `id`=" + id;
