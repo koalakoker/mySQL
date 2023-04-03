@@ -38,14 +38,14 @@ export class MySQLcon {
     const query = "SELECT * FROM " + table + " WHERE `id`=" + id;
     return this.query(query);
   }
-  filterBy(table, element) {
+  filterBy(table, col, value) {
     const query =
       "SELECT * FROM " +
       table +
       " WHERE " +
-      element.col +
+      col +
       " = " +
-      this.format(element.value, '"');
+      this.format(value, '"');
     return this.query(query);
   }
   getAll(table) {

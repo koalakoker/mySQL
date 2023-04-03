@@ -9,7 +9,7 @@ export const router = express.Router();
 router.get("/", auth, async (req, res) => {
   const userID = req["user"]["_id"];
   const con = createMySQLConnection();
-  const results = await con.getAll("drawings");
+  const results = await con.filterBy("drawings", "user", userID);
   con.end();
   res.send(results);
   // res.send(
@@ -32,11 +32,6 @@ router.post("/", auth, async (req, res) => {
     const results = await con.create("drawings", drawing);
     res.send(JSON.stringify(results));
     con.end();
-
-    // let webPass = new WebPass(req.body);
-    // webPass["userid"] = req["user"]["_id"];
-    // webPass = await webPass.save();
-    // res.send(webPass);
   } catch (error) {
     console.log(error.message);
     return answer.badRequest(res, error.message);
