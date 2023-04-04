@@ -10,13 +10,19 @@ router.get("/", auth, async (req, res) => {
   const userID = req["user"]["_id"];
   const con = createMySQLConnection();
   const results = await con.filterBy("drawings", "user", userID);
-  con.end();
+  results.sort(function (a, b) {
+    let x = a.name.toLowerCase();
+    let y = b.name.toLowerCase();
+    if (x < y) {
+      return -1;
+    }
+    if (x > y) {
+      return 1;
+    }
+    return 0;
+  });
   res.send(results);
-  // res.send(
-  //   await WebPass.find({ userid: userID })
-  //     .select("_id name url username pass registrationDate expirationDate")
-  //     .sort("name")
-  // );
+  con.end();
 });
 
 router.post("/", auth, async (req, res) => {
