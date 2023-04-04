@@ -25,6 +25,20 @@ router.get("/", auth, async (req, res) => {
   con.end();
 });
 
+router.get("/:id", auth, async (req, res) => {
+  const userID = req["user"]["_id"];
+  const con = createMySQLConnection();
+  const row = await con.get("drawings", req.params.id);
+  if (row.length == 0) {
+    res.send("{}");
+  }
+  if (row.length == 1) {
+    res.send(row.at(0));
+  }
+
+  con.end();
+});
+
 router.post("/", auth, async (req, res) => {
   const { error } = validateDrawing(req.body);
   if (error) {

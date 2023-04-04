@@ -1,6 +1,6 @@
 import mysql from "mysql";
-import config from "config";
 import { Element } from "./element.js";
+import { confGet } from "../utils/lib.js";
 
 export class MySQLcon {
   constructor(host, user, pass, db) {
@@ -124,15 +124,4 @@ export function createMySQLConnection() {
   const pass = confGet("mysql_password");
   const db = "sketch";
   return new MySQLcon(host, user, pass, db);
-}
-
-function confGet(str) {
-  const value = config.get(str);
-  if (!value) {
-    console.log(
-      "Fatal error: '" + str + "' not set in an environment variable"
-    );
-    process.exit(1);
-  }
-  return value;
 }

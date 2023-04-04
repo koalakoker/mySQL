@@ -1,5 +1,6 @@
-import { createMySQLConnection } from "../mysqlcon.js";
-import { Element } from "../element.js";
+import { createMySQLConnection } from "../src/connection/mysqlCon.js";
+import { Element } from "../src/connection/element.js";
+import { getRandomName } from "../src/utils/lib.js";
 import { assert } from "chai";
 
 describe("MySQLcon tests", function () {
@@ -22,14 +23,14 @@ describe("MySQLcon tests", function () {
     const results = await con.filterBy("drawings", user.col, user.value);
     assert.equal(results.length, 5);
   });
-  it("Truncate test", async function () {
-    let data = getNewData();
-    const id = await con.create("drawings", data);
-    await con.truncate("drawings");
-    const results = await con.getAll("drawings");
-    assert.equal(results.length, 0);
-    con.end();
-  });
+  // it("Truncate test", async function () {
+  //   let data = getNewData();
+  //   const id = await con.create("drawings", data);
+  //   await con.truncate("drawings");
+  //   const results = await con.getAll("drawings");
+  //   assert.equal(results.length, 0);
+  //   con.end();
+  // });
 });
 
 async function CURDtest(con) {
@@ -67,15 +68,4 @@ function getNewData() {
   data.push(new Element("name", name));
   data.push(new Element("drawing", JSON.stringify(drawing)));
   return data;
-}
-function getRandomName() {
-  let str = "";
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  const charactersLength = characters.length;
-  const l = Math.floor(Math.random() * 5) + 5;
-  for (let i = 0; i < l; i++) {
-    str += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return str;
 }

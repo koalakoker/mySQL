@@ -2,5 +2,6 @@
   "jwtPrivateKey": "glinks_jwtPrivateKey",
   "mysql_user": "mysql_user",
   "mysql_password": "mysql_password",
-  "mysql_dburl": "mysql_dburl"
+  "mysql_dburl": "mysql_dburl",
+  "x_auth_code": "x_auth_code"
 }
