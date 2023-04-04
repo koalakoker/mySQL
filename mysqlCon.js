@@ -52,10 +52,12 @@ export class MySQLcon {
     const query = "SELECT * FROM " + table;
     return this.query(query);
   }
-  update(table, id, data) {
+  async update(table, id, data) {
     const query =
       "UPDATE " + table + " SET " + this.setValues(data) + " WHERE `id`=" + id;
-    return this.query(query);
+    await this.query(query);
+    const row = await this.get(table, id);
+    return row.at(0);
   }
   delete(table, id) {
     const query = "DELETE FROM " + table + " WHERE `id`=" + id;

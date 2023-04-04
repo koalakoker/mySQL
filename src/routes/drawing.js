@@ -51,16 +51,14 @@ router.put("/:id", auth, async (req, res) => {
     return answer.badRequest(res, error.details[0].message);
   }
   try {
-    const userID = req["user"]["_id"];
     const con = createMySQLConnection();
+    const userID = req["user"]["_id"];
     let drawings = await con.get("drawings", req.params.id);
     if (drawings.length == 0) return answer.notFound(res);
     const drawing = drawings[0];
     if (drawing["user"] != userID) return answer.userUnauthorized(res);
     req.body.user = drawing["user"];
     const newData = new Drawing(req.body);
-    console.log(drawing);
-    console.log(newData);
     res.send(await con.update("drawings", req.params.id, newData));
     con.end();
   } catch (error) {
@@ -71,12 +69,15 @@ router.put("/:id", auth, async (req, res) => {
 
 router.delete("/:id", auth, async (req, res) => {
   try {
-    // const userID = req["user"]["_id"];
-    // let webPass = await WebPass.findOne({ _id: req.params.id });
-    // if (!webPass) return answer.notFound(res);
-    // if (webPass["userid"] != userID) return answer.userUnauthorized(res);
-    // webPass.remove();
-    // res.send(webPass);
+    const con = createMySQLConnection();
+    const userID = req["user"]["_id"];
+    let drawings = await con.get("drawings", req.params.id);
+    if (drawings.length == 0) return answer.notFound(res);
+    const drawing = drawings[0];
+    if (drawing["user"] != userID) return answer.userUnauthorized(res);
+    await con.delete("drawings", req.params.id);
+    res.send(drawings);
+    con.end();
   } catch (error) {
     console.log(error.message);
     return answer.badRequest(res, error.message);
