@@ -51,18 +51,18 @@ router.put("/:id", auth, async (req, res) => {
     return answer.badRequest(res, error.details[0].message);
   }
   try {
-    // const userID = req["user"]["_id"];
-    // let webPass = await WebPass.findOne({ _id: req.params.id });
-    // if (!webPass) return answer.notFound(res);
-    // if (webPass["userid"] != userID) return answer.userUnauthorized(res);
-    // webPass["name"] = req.body.name;
-    // webPass["url"] = req.body.url;
-    // webPass["username"] = req.body.username;
-    // webPass["pass"] = req.body.pass;
-    // webPass["registrationDate"] = req.body.registrationDate;
-    // webPass["expirationDate"] = req.body.expirationDate;
-    // await webPass.save();
-    // res.send(webPass);
+    const userID = req["user"]["_id"];
+    const con = createMySQLConnection();
+    let drawings = await con.get("drawings", req.params.id);
+    if (drawings.length == 0) return answer.notFound(res);
+    const drawing = drawings[0];
+    if (drawing["user"] != userID) return answer.userUnauthorized(res);
+    req.body.user = drawing["user"];
+    const newData = new Drawing(req.body);
+    console.log(drawing);
+    console.log(newData);
+    res.send(await con.update("drawings", req.params.id, newData));
+    con.end();
   } catch (error) {
     console.log(error.message);
     return answer.badRequest(res, error.message);

@@ -6,7 +6,7 @@ export class Drawing extends Array {
     super();
     this.push(new Element("user", body.user));
     this.push(new Element("name", body.name));
-    this.push(new Element("drawing", JSON.stringify(body.drawing)));
+    this.push(new Element("drawing", body.drawing));
   }
 }
 
