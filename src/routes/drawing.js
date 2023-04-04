@@ -2,7 +2,7 @@ import express from "express";
 import { Drawing, validateDrawing } from "../models/drawing.js";
 import * as answer from "./answers.js";
 import { auth } from "../middleware/auth.js";
-import { createMySQLConnection } from "../../mysqlCon.js";
+import { createMySQLConnection } from "../connection/mysqlCon.js";
 
 export const router = express.Router();
 

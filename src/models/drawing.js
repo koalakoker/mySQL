@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { Element } from "../../element.js";
+import { Element } from "../connection/element.js";
 
 export class Drawing extends Array {
   constructor(body) {
