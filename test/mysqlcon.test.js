@@ -22,15 +22,8 @@ describe("MySQLcon tests", function () {
 
     const results = await con.filterBy("drawings", user.col, user.value);
     assert.equal(results.length, 5);
+    con.end();
   });
-  // it("Truncate test", async function () {
-  //   let data = getNewData();
-  //   const id = await con.create("drawings", data);
-  //   await con.truncate("drawings");
-  //   const results = await con.getAll("drawings");
-  //   assert.equal(results.length, 0);
-  //   con.end();
-  // });
 });
 
 async function CURDtest(con) {

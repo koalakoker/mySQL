@@ -30,10 +30,10 @@ router.get("/:id", auth, async (req, res) => {
   const con = createMySQLConnection();
   const row = await con.get("drawings", req.params.id);
   if (row.length == 0) {
-    res.send("{}");
+    res.send("[]");
   }
   if (row.length == 1) {
-    res.send(row.at(0));
+    res.send(row);
   }
 
   con.end();
