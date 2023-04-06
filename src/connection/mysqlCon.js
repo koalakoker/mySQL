@@ -67,6 +67,16 @@ export class MySQLcon {
     const query = "TRUNCATE " + table;
     return this.query(query);
   }
+  async getNextId() {
+    const query =
+      "SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'sketch' AND TABLE_NAME = 'drawings'";
+    const res = await this.query(query);
+    return res.at(0).AUTO_INCREMENT;
+  }
+  setNextId(table, nextId) {
+    const query = "ALTER TABLE " + table + " AUTO_INCREMENT = " + nextId;
+    return this.query(query);
+  }
   end() {
     this.con.end();
   }
