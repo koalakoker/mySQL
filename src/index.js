@@ -6,7 +6,7 @@ import Debug from "debug";
 import { router as drawing } from "./routes/drawing.js";
 
 const debug = Debug("MyApp");
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 const app = express();
 
 if (!config.get("jwtPrivateKey")) {
